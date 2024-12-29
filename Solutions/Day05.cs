@@ -14,7 +14,7 @@ namespace AOC_2016.Solutions
         readonly string input;
         readonly int desiredPwdLen;
         string pwd1;
-        char[] pwd2;
+        readonly char[] pwd2;
         int pwd2Found = 0;
         int idxChecked = 0;
         public Day05()
@@ -29,15 +29,14 @@ namespace AOC_2016.Solutions
             bool part1 = !part2;
             if (part1 && pwd1.Length == desiredPwdLen) return pwd1;
             if (part2 && pwd2Found == desiredPwdLen) return String.Concat(pwd2);
-            MD5 md5Hasher = MD5.Create();
             while (!
                 ((part1 && pwd1 is not null && pwd1.Length == desiredPwdLen)
                 || (part2 && pwd2Found == desiredPwdLen)))
             {
-                var hashData = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input + idxChecked));
+                var hashData = MD5.HashData(Encoding.Default.GetBytes(input + idxChecked));
                 if (hashData[0] == 0 && hashData[1] == 0 && hashData[2] < 0x10)
                 {
-                    if (pwd1.Length < desiredPwdLen)
+                    if (pwd1 is not null && pwd1.Length < desiredPwdLen)
                     {
                         pwd1 += hashData[2].ToString("X2")[1];
                         if (pwd1.Length == desiredPwdLen && part1) return pwd1;
